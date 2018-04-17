@@ -15,7 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        // find plist in /Users/wanching/Library/Developer/CoreSimulator/Devices/FF0EC51A-BF6F-40E5-AC5F-9C00B4BA5F42/data/Containers/Data/Application/BCB01355-6938-4A59-A12A-52DB4F246750/Library/Preferences
+        print(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! as String)
+        
         return true
     }
 
