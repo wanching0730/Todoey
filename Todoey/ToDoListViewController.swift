@@ -12,6 +12,7 @@ class ToDoListViewController: UITableViewController {
     
     var itemArray = ["one", "two", "three"]
     
+    // inside UserDefaults class, there is a singleton static object named "standard", everytime pointing to the same static object, so we always editing the same plist
     let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
