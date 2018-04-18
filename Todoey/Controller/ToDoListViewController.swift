@@ -47,9 +47,11 @@ class ToDoListViewController: UITableViewController {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         
-        cell.textLabel?.text = itemArray[indexPath.row].title
+        let item = itemArray[indexPath.row]
         
-        if itemArray[indexPath.row].done == true {
+        cell.textLabel?.text = item.title
+        
+        if item.done == true {
             cell.accessoryType = .checkmark
         } else {
             cell.accessoryType = .none
@@ -65,11 +67,13 @@ class ToDoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // print(itemArray[indexPath.row])
         
-        if itemArray[indexPath.row].done == true {
-            itemArray[indexPath.row].done = false
-        } else {
-            itemArray[indexPath.row].done = true
-        }
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        
+//        if itemArray[indexPath.row].done == true {
+//            itemArray[indexPath.row].done = false
+//        } else {
+//            itemArray[indexPath.row].done = true
+//        }
         
         tableView.reloadData()
         
