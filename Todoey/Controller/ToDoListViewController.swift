@@ -15,29 +15,15 @@ class ToDoListViewController: UITableViewController {
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
     // inside UserDefaults class, there is a singleton static object named "standard", everytime pointing to the same static object, so we always editing the same plist
-//    let defaults = UserDefaults.standard
+    // defaults can only store data with certain datatype
+    // let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         print(dataFilePath)
         
-        let newItem = Item()
-        newItem.title = "Buy eggs"
-        newItem.done = true
-        itemArray.append(newItem)
-        
-        let newItem1 = Item()
-        newItem1.title = "Buy bread"
-        itemArray.append(newItem1)
-        
-        let newItem2 = Item()
-        newItem2.title = "Badmintion"
-        itemArray.append(newItem2)
-        
-//        if let items = defaults.array(forKey: "ToDoListArray") as? [Item] {
-//            itemArray = items
-//        }
+        loadData()
     
     }
 
@@ -127,6 +113,22 @@ class ToDoListViewController: UITableViewController {
         self.tableView.reloadData()
         
         //            self.defaults.set(self.itemArray, forKey: "ToDoListArray")
+    }
+    
+    func loadData() {
+        
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            let decoder = PropertyListDecoder()
+            do {
+                itemArray = try decoder.decode([Item].self, from: data)
+            } catch {
+                print("Error in decoding item array, \(error)")
+            }
+        }
+        
+        //        if let items = defaults.array(forKey: "ToDoListArray") as? [Item] {
+        //            itemArray = items
+        //        }
     }
     
 
