@@ -8,12 +8,14 @@
 
 // Core data: framework to manage model layer object in iOS apps in CRUD our data.
 import UIKit
+import CoreData
 
 class ToDoListViewController: UITableViewController {
     
     var itemArray = [Item]()
     
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     // inside UserDefaults class, there is a singleton static object named "standard", everytime pointing to the same static object, so we always editing the same plist
     // defaults can only store data with certain datatype
@@ -24,7 +26,7 @@ class ToDoListViewController: UITableViewController {
         
         //print(dataFilePath)
         
-        loadData()
+        //loadData()
     
     }
 
@@ -83,8 +85,9 @@ class ToDoListViewController: UITableViewController {
         
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
             
-            let newItem = Item()
+            let newItem = Item(context: self.context)
             newItem.title = textField.text!
+            newItem.done = false
             self.itemArray.append(newItem)
             
             self.saveItems()
@@ -102,13 +105,16 @@ class ToDoListViewController: UITableViewController {
     }
     
     func saveItems() {
-        let encoder = PropertyListEncoder()
+//        let encoder = PropertyListEncoder()
         
         do {
-            let data = try encoder.encode(itemArray)
-            try data.write(to: dataFilePath!)
+//            let data = try encoder.encode(itemArray)
+//            try data.write(to: dataFilePath!)
+            
+            // Save data to CoreData
+            try context.save()
         } catch {
-            print("Error in encoding item array, \(error)")
+            print("Error in saving context, \(error)")
         }
         
         self.tableView.reloadData()
@@ -116,21 +122,21 @@ class ToDoListViewController: UITableViewController {
         //            self.defaults.set(self.itemArray, forKey: "ToDoListArray")
     }
     
-    func loadData() {
-        
-        if let data = try? Data(contentsOf: dataFilePath!) {
-            let decoder = PropertyListDecoder()
-            do {
-                itemArray = try decoder.decode([Item].self, from: data)
-            } catch {
-                print("Error in decoding item array, \(error)")
-            }
-        }
-        
-        //        if let items = defaults.array(forKey: "ToDoListArray") as? [Item] {
-        //            itemArray = items
-        //        }
-    }
+//    func loadData() {
+//
+//        if let data = try? Data(contentsOf: dataFilePath!) {
+//            let decoder = PropertyListDecoder()
+//            do {
+//                itemArray = try decoder.decode([Item].self, from: data)
+//            } catch {
+//                print("Error in decoding item array, \(error)")
+//            }
+//        }
+//
+//        //        if let items = defaults.array(forKey: "ToDoListArray") as? [Item] {
+//        //            itemArray = items
+//        //        }
+//    }
     
 
 }
