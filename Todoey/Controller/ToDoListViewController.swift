@@ -6,6 +6,7 @@
 //  Copyright © 2018 Wan Ching. All rights reserved.
 //
 
+// Core data: framework to manage model layer object in iOS apps in CRUD our data.
 import UIKit
 
 class ToDoListViewController: UITableViewController {
@@ -21,7 +22,7 @@ class ToDoListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print(dataFilePath)
+        //print(dataFilePath)
         
         loadData()
     
