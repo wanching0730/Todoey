@@ -123,15 +123,15 @@ class ToDoListViewController: UITableViewController {
         // self.defaults.set(self.itemArray, forKey: "ToDoListArray")
     }
     
-    func loadData() {
-        
-        let request: NSFetchRequest<Item> = Item.fetchRequest()
+    func loadData(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
         
         do {
             itemArray = try context.fetch(request)
         } catch {
             print("Error in fetching data from context \(error)")
         }
+        
+        tableView.reloadData()
 
         
 //        // load data from custome data file path
@@ -160,19 +160,12 @@ extension ToDoListViewController: UISearchBarDelegate {
         
         let request: NSFetchRequest<Item> = Item.fetchRequest()
         
-        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-        request.predicate = predicate
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
         
-        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-        request.sortDescriptors = [sortDescriptor]
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         
-        do {
-            itemArray = try context.fetch(request)
-        } catch {
-            print("Erorr in fetching context \(error)" )
-        }
+        loadData(with: request)
         
-        tableView.reloadData()
     }
 }
 
