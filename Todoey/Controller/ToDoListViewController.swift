@@ -61,7 +61,10 @@ class ToDoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        //itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        
+        context.delete(itemArray[indexPath.row])
+        itemArray.remove(at: indexPath.row)
         
 //        if itemArray[indexPath.row].done == true {
 //            itemArray[indexPath.row].done = false
@@ -70,8 +73,6 @@ class ToDoListViewController: UITableViewController {
 //        }
         
         saveItems()
-        
-        tableView.reloadData()
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -120,7 +121,7 @@ class ToDoListViewController: UITableViewController {
         
         self.tableView.reloadData()
         
-        //            self.defaults.set(self.itemArray, forKey: "ToDoListArray")
+        // self.defaults.set(self.itemArray, forKey: "ToDoListArray")
     }
     
     func loadData() {
