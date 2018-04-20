@@ -26,7 +26,7 @@ class ToDoListViewController: UITableViewController {
         
         //print(dataFilePath)
         
-        //loadData()
+        loadData()
     
     }
 
@@ -115,7 +115,7 @@ class ToDoListViewController: UITableViewController {
             // View backend Sqlite db in /Users/wanching/Library/Developer/CoreSimulator/Devices/FF0EC51A-BF6F-40E5-AC5F-9C00B4BA5F42/data/Containers/Data/Application/0EA25AEF-4083-4F4D-B876-A0DE25CB469C/Library/Application Support/DataModel.sqlite
             try context.save()
         } catch {
-            print("Error in saving context, \(error)")
+            print("Error in saving context \(error)")
         }
         
         self.tableView.reloadData()
@@ -123,8 +123,18 @@ class ToDoListViewController: UITableViewController {
         //            self.defaults.set(self.itemArray, forKey: "ToDoListArray")
     }
     
-//    func loadData() {
-//
+    func loadData() {
+        
+        let request: NSFetchRequest<Item> = Item.fetchRequest()
+        
+        do {
+            itemArray = try context.fetch(request)
+        } catch {
+            print("Error in fetching data from context, \(error)")
+        }
+
+        
+//        // load data from custome data file path
 //        if let data = try? Data(contentsOf: dataFilePath!) {
 //            let decoder = PropertyListDecoder()
 //            do {
@@ -134,10 +144,11 @@ class ToDoListViewController: UITableViewController {
 //            }
 //        }
 //
-//        //        if let items = defaults.array(forKey: "ToDoListArray") as? [Item] {
-//        //            itemArray = items
-//        //        }
-//    }
+//        // load data from user default
+//        if let items = defaults.array(forKey: "ToDoListArray") as? [Item] {
+//            itemArray = items
+//        }
+    }
     
 
 }
