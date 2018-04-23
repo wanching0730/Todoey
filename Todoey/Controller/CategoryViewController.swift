@@ -17,8 +17,8 @@ class CategoryViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         
+        loadData()
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -62,6 +62,18 @@ class CategoryViewController: UITableViewController {
         }
         
         present(alert, animated: true, completion: nil)
+        
+    }
+    
+    func loadData(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
+        
+        do{
+            categories = try context.fetch(request)
+        } catch {
+            print("Error in fetching data from context \(error)")
+        }
+        
+        tableView.reloadData()
         
     }
     
