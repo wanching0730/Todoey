@@ -46,6 +46,12 @@ class CategoryViewController: UITableViewController {
         
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
             
+            let newCategory = Category(context: self.context)
+            newCategory.name = textField.text!
+            
+            self.categories.append(newCategory)
+            
+            self.saveCategories()
         }
         
         alert.addAction(action)
@@ -57,6 +63,17 @@ class CategoryViewController: UITableViewController {
         
         present(alert, animated: true, completion: nil)
         
+    }
+    
+    func saveCategories() {
+        
+        do{
+            try context.save()
+        } catch {
+            print("Error in saving context \(error)")
+        }
+        
+        self.tableView.reloadData()
     }
     
     
