@@ -41,6 +41,7 @@ class CategoryViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destinationVC = segue.destination as! ToDoListViewController
         
+        // indexPath might be null, so perform optional binding
         if let indexPath = tableView.indexPathForSelectedRow {
             destinationVC.selectedCategory = categories[indexPath.row]
         }
@@ -82,7 +83,6 @@ class CategoryViewController: UITableViewController {
         }
         
         tableView.reloadData()
-        
     }
     
     func saveCategories() {
@@ -95,6 +95,4 @@ class CategoryViewController: UITableViewController {
         
         self.tableView.reloadData()
     }
-    
-    
 }
