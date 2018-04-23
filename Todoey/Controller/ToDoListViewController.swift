@@ -113,6 +113,7 @@ class ToDoListViewController: UITableViewController {
             
             // Save data to CoreData
             // View backend Sqlite db in /Users/wanching/Library/Developer/CoreSimulator/Devices/FF0EC51A-BF6F-40E5-AC5F-9C00B4BA5F42/data/Containers/Data/Application/0EA25AEF-4083-4F4D-B876-A0DE25CB469C/Library/Application Support/DataModel.sqlite
+            // Use Datum-SQLite Apps
             try context.save()
         } catch {
             print("Error in saving context \(error)")
