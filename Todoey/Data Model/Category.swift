@@ -1,5 +1,5 @@
 //
-//  Item.swift
+//  Category.swift
 //  Todoey
 //
 //  Created by Wan Ching on 26/04/2018.
@@ -9,7 +9,6 @@
 import Foundation
 import RealmSwift
 
-class Item: Object {
-    @objc dynamic var title: String = ""
-    @objc dynamic var done: Bool = false
+class Category: Object {
+    @objc dynamic var name: String = ""
 }
