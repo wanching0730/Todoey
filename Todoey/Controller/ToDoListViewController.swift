@@ -75,8 +75,8 @@ class ToDoListViewController: UITableViewController {
         if let item = toDoItem?[indexPath.row] {
             do {
                 try realm.write {
-                    realm.delete(item)
-                    //item.done = !item.done
+                    //realm.delete(item)
+                    item.done = !item.done
                 }
             } catch {
                 print("Error in updating done status \(error)")
@@ -111,6 +111,7 @@ class ToDoListViewController: UITableViewController {
                     try self.realm.write {
                         let newItem = Item()
                         newItem.title = textField.text!
+                        newItem.dateCreated = Date()
                         currentCategory.items.append(newItem)
                     }
                 } catch {
@@ -213,6 +214,10 @@ class ToDoListViewController: UITableViewController {
 extension ToDoListViewController: UISearchBarDelegate {
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        toDoItem = toDoItem?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
+        
+        tableView.reloadData()
 
 //        let request: NSFetchRequest<Item> = Item.fetchRequest()
 //
