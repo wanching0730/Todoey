@@ -13,10 +13,12 @@ import RealmSwift
 class CategoryViewController: UITableViewController {
     
     let realm = try! Realm()
+    var categories: Results<Category>! // data type that return from Realm query (auto update container)
     
-    var categories = [Category]()
+    //var categories = [Category]()
     
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    // context for CoreData
+    //let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,7 +45,7 @@ class CategoryViewController: UITableViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destinationVC = segue.destination as! ToDoListViewController
-        
+
         // indexPath might be null, so perform optional binding
         if let indexPath = tableView.indexPathForSelectedRow {
             destinationVC.selectedCategory = categories[indexPath.row]
@@ -72,9 +74,9 @@ class CategoryViewController: UITableViewController {
             let newCategory = Category()
             newCategory.name = textField.text!
             
-            self.categories.append(newCategory)
+            //self.categories.append(newCategory)
             
-            self.save(newCategory)
+            self.save(category: newCategory)
         }
         
         alert.addAction(action)
@@ -88,16 +90,27 @@ class CategoryViewController: UITableViewController {
         
     }
     
-    func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
+//    // load data with CoreData
+//    func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
+//
+//        do{
+//            categories = try context.fetch(request)
+//        } catch {
+//            print("Error in fetching data from context \(error)")
+//        }
+//
+//        tableView.reloadData()
+//    }
+    
+    // load data with Realm
+    func loadCategories() {
         
-        do{
-            categories = try context.fetch(request)
-        } catch {
-            print("Error in fetching data from context \(error)")
-        }
+        categories = realm.objects(Category.self)
         
         tableView.reloadData()
     }
+    
+    
     
 //    // save data using CoreData
 //    func saveCategories() {
@@ -112,10 +125,10 @@ class CategoryViewController: UITableViewController {
 //    }
     
     // save data using Realm
-    func save(newCategory: Category) {
+    func save(category: Category) {
         do {
             try realm.write {
-                realm.add(newCategory)
+                realm.add(category)
             }
         } catch {
             print("Error in saving data to Realm \(error)")
