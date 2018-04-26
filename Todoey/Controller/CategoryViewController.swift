@@ -7,9 +7,12 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
+//import CoreData
 
 class CategoryViewController: UITableViewController {
+    
+    let realm = try! Realm()
     
     var categories = [Category]()
     
@@ -53,14 +56,25 @@ class CategoryViewController: UITableViewController {
         
         let alert = UIAlertController(title: "Add new category", message:"", preferredStyle: .alert)
         
+        // Add data using CoreData
+//        let action = UIAlertAction(title: "Add", style: .default) { (action) in
+//
+//            let newCategory = Category(context: self.context)
+//            newCategory.name = textField.text!
+//
+//            self.categories.append(newCategory)
+//
+//            self.saveCategories()
+//        }
+        
+        // Add data using Realm
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
-            
-            let newCategory = Category(context: self.context)
+            let newCategory = Category()
             newCategory.name = textField.text!
             
             self.categories.append(newCategory)
             
-            self.saveCategories()
+            self.save(newCategory)
         }
         
         alert.addAction(action)
@@ -85,12 +99,26 @@ class CategoryViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    func saveCategories() {
-        
-        do{
-            try context.save()
+//    // save data using CoreData
+//    func saveCategories() {
+//
+//        do{
+//            try context.save()
+//        } catch {
+//            print("Error in saving context \(error)")
+//        }
+//
+//        self.tableView.reloadData()
+//    }
+    
+    // save data using Realm
+    func save(newCategory: Category) {
+        do {
+            try realm.write {
+                realm.add(newCategory)
+            }
         } catch {
-            print("Error in saving context \(error)")
+            print("Error in saving data to Realm \(error)")
         }
         
         self.tableView.reloadData()
