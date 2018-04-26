@@ -71,13 +71,26 @@ class ToDoListViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if let item = toDoItem?[indexPath.row] {
+            do {
+                try realm.write {
+                    item.done = !item.done
+                }
+            } catch {
+                print("Error in updating done status \(error)")
+            }
+        }
+        
+        // Call cellForRowAt method
+        tableView.reloadData()
 
         //itemArray[indexPath.row].done = !itemArray[indexPath.row].done
 
 //        context.delete(itemArray[indexPath.row])
 //        itemArray.remove(at: indexPath.row)
 
-        saveItems()
+        //saveItems()
 
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -187,7 +200,7 @@ class ToDoListViewController: UITableViewController {
     
     // Load data from Realm
     func loadData() {
-        itemArray = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
+        toDoItem = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
         
         tableView.reloadData()
     }
@@ -200,13 +213,13 @@ extension ToDoListViewController: UISearchBarDelegate {
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
 
-        let request: NSFetchRequest<Item> = Item.fetchRequest()
-
-        let searchPredicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-
-        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-
-        loadData(with: request, predicate: searchPredicate)
+//        let request: NSFetchRequest<Item> = Item.fetchRequest()
+//
+//        let searchPredicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+//
+//        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+//
+//        loadData(with: request, predicate: searchPredicate)
 
     }
 
