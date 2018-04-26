@@ -91,8 +91,8 @@
 			isa = PBXGroup;
 			children = (
 				30EC68C62089B49900AED71A /* DataModel.xcdatamodeld */,
-				304FC1722091C64900BC2183 /* Item.swift */,
 				304FC1742091C65300BC2183 /* Category.swift */,
+				304FC1722091C64900BC2183 /* Item.swift */,
 			);
 			path = "Data Model";
 			sourceTree = "<group>";
