@@ -8,11 +8,15 @@
 
 // Core data: framework to manage model layer object in iOS apps in CRUD our data.
 import UIKit
-import CoreData
+import RealmSwift
+//import CoreData
 
 class ToDoListViewController: UITableViewController {
 
-    var itemArray = [Item]()
+    let realm = try!Realm()
+    var toDoItem: Results<Item>?
+    
+    //var itemArray = [Item]()
 
     // call loadData() when selectedCategory has a value
     var selectedCategory: Category? {
@@ -21,8 +25,9 @@ class ToDoListViewController: UITableViewController {
         }
     }
 
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+//    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    
+//    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     // inside UserDefaults class, there is a singleton static object named "standard", everytime pointing to the same static object, so we always editing the same plist
     // defaults can only store data with certain datatype
@@ -43,12 +48,14 @@ class ToDoListViewController: UITableViewController {
 
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
 
-        let item = itemArray[indexPath.row]
-
-        cell.textLabel?.text = item.title
-
-        // Ternary operator
-        cell.accessoryType = item.done ? .checkmark :  .none
+        if let item = toDoItem?[indexPath.row] {
+            cell.textLabel?.text = item.title
+            
+            // Ternary operator
+            cell.accessoryType = item.done ? .checkmark :  .none
+        } else {
+            cell.textLabel?.text = "No items added"
+        }
 
 //        if item.done == true {
 //            cell.accessoryType = .checkmark
@@ -60,21 +67,15 @@ class ToDoListViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return itemArray.count
+        return toDoItem?.count ?? 1
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         //itemArray[indexPath.row].done = !itemArray[indexPath.row].done
 
-        context.delete(itemArray[indexPath.row])
-        itemArray.remove(at: indexPath.row)
-
-//        if itemArray[indexPath.row].done == true {
-//            itemArray[indexPath.row].done = false
-//        } else {
-//            itemArray[indexPath.row].done = true
-//        }
+//        context.delete(itemArray[indexPath.row])
+//        itemArray.remove(at: indexPath.row)
 
         saveItems()
 
@@ -89,14 +90,30 @@ class ToDoListViewController: UITableViewController {
         let alert = UIAlertController(title: "Add new Todoey item", message: "", preferredStyle: .alert)
 
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+            
+            // Add data using Realm
+            if let currentCategory = self.selectedCategory {
+                do {
+                    try self.realm.write {
+                        let newItem = Item()
+                        newItem.title = textField.text!
+                        currentCategory.items.append(newItem)
+                    }
+                } catch {
+                    print("Error in saving data to Realm \(error)")
+                }
+            }
+            
+            self.tableView.reloadData()
 
-            let newItem = Item(context: self.context)
-            newItem.title = textField.text!
-            newItem.done = false
-            newItem.parentCategory = self.selectedCategory
-            self.itemArray.append(newItem)
-
-            self.saveItems()
+            // Add data using CoreData
+//            let newItem = Item(context: self.context)
+//            newItem.title = textField.text!
+//            newItem.done = false
+//            newItem.parentCategory = self.selectedCategory
+//            self.itemArray.append(newItem)
+//
+//            self.saveItems()
 
         }
 
@@ -110,46 +127,49 @@ class ToDoListViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
 
-    func saveItems() {
-//        let encoder = PropertyListEncoder()
-
-        do {
-//            let data = try encoder.encode(itemArray)
-//            try data.write(to: dataFilePath!)
-
-            // Save data to CoreData
-            // View backend Sqlite db in /Users/wanching/Library/Developer/CoreSimulator/Devices/FF0EC51A-BF6F-40E5-AC5F-9C00B4BA5F42/data/Containers/Data/Application/0EA25AEF-4083-4F4D-B876-A0DE25CB469C/Library/Application Support/DataModel.sqlite
-            // Use Datum-SQLite Apps
-            try context.save()
-        } catch {
-            print("Error in saving context \(error)")
-        }
-
-        self.tableView.reloadData()
-
-        // self.defaults.set(self.itemArray, forKey: "ToDoListArray")
-    }
-
-    func loadData(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
-
-        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
-
-        if let additionalPredicate = predicate {
-            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicate])
-        } else {
-            request.predicate = categoryPredicate
-        }
-
-        do {
-            itemArray = try context.fetch(request)
-        } catch {
-            print("Error in fetching data from context \(error)")
-        }
-
-        tableView.reloadData()
+//    func saveItems() {
+////        let encoder = PropertyListEncoder()
+//
+//        do {
+//            // Save data to PList
+////            let data = try encoder.encode(itemArray)
+////            try data.write(to: dataFilePath!)
+//
+//            // Save data to CoreData
+//            // View backend Sqlite db in /Users/wanching/Library/Developer/CoreSimulator/Devices/FF0EC51A-BF6F-40E5-AC5F-9C00B4BA5F42/data/Containers/Data/Application/0EA25AEF-4083-4F4D-B876-A0DE25CB469C/Library/Application Support/DataModel.sqlite
+//            // Use Datum-SQLite Apps
+//            try context.save()
+//        } catch {
+//            print("Error in saving context \(error)")
+//        }
+//
+//        self.tableView.reloadData()
+//
+//        // self.defaults.set(self.itemArray, forKey: "ToDoListArray")
+//    }
 
 
-//        // load data from custome data file path
+    // Load data from CoreData
+//    func loadData(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
+//
+//        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
+//
+//        if let additionalPredicate = predicate {
+//            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicate])
+//        } else {
+//            request.predicate = categoryPredicate
+//        }
+//
+//        do {
+//            itemArray = try context.fetch(request)
+//        } catch {
+//            print("Error in fetching data from context \(error)")
+//        }
+//
+//        tableView.reloadData()
+
+
+//        // load data from custom data file path
 //        if let data = try? Data(contentsOf: dataFilePath!) {
 //            let decoder = PropertyListDecoder()
 //            do {
@@ -163,6 +183,13 @@ class ToDoListViewController: UITableViewController {
 //        if let items = defaults.array(forKey: "ToDoListArray") as? [Item] {
 //            itemArray = items
 //        }
+//    }
+    
+    // Load data from Realm
+    func loadData() {
+        itemArray = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
+        
+        tableView.reloadData()
     }
 
 }

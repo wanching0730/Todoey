@@ -93,7 +93,7 @@ class CategoryViewController: UITableViewController {
         
     }
     
-//    // load data with CoreData
+//    load data with CoreData
 //    func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
 //
 //        do{
@@ -128,7 +128,7 @@ class CategoryViewController: UITableViewController {
 //    }
     
     // save data using Realm
-    func save(category: Category) {
+    func save (category: Category) {
         do {
             try realm.write {
                 realm.add(category)
