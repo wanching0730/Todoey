@@ -13,7 +13,7 @@ import RealmSwift
 class CategoryViewController: UITableViewController {
     
     let realm = try! Realm()
-    var categories: Results<Category>! // data type that return from Realm query (auto update container)
+    var categories: Results<Category>? // data type that return from Realm query (auto update container)
     
     //var categories = [Category]()
     
@@ -27,7 +27,10 @@ class CategoryViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        
+        // Nil Coalescing Operator
+        // if categories is not nil return count else return 1
+        return categories?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
