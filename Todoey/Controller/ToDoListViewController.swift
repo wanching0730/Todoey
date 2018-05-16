@@ -46,12 +46,12 @@ class ToDoListViewController: SwipeTableViewController {
     // this method called right before the app is showed up, right after navigation bar added to the app
     override func viewWillAppear(_ animated: Bool) {
         
+        // already ensure selectedCategory is not nil through optional binding, so can force unwrap it
+        title = selectedCategory?.name
+        
         // guarantee that this optional binding won't fail, so use guard let
         guard let colourHex = selectedCategory?.colour else {fatalError()}
         
-        // already ensure selectedCategory is not nil through optional binding, so can force unwrap it
-        title = selectedCategory!.name
-    
         guard let navBar = navigationController?.navigationBar else {fatalError("Navigation bar does not exist")}
         
         // parameter of ContrastColorOf() only accept normal variable, and not Optional variable
