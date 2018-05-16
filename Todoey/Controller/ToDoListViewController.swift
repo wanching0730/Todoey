@@ -17,6 +17,7 @@ class ToDoListViewController: SwipeTableViewController {
     let realm = try!Realm()
     var toDoItem: Results<Item>?
     
+    @IBOutlet weak var searchBar: UISearchBar!
     //var itemArray = [Item]()
 
     // call loadData() when selectedCategory has a value
@@ -52,6 +53,8 @@ class ToDoListViewController: SwipeTableViewController {
             guard let navBar = navigationController?.navigationBar else {fatalError("Navigation bar does not exist")}
             
             navBar.barTintColor = UIColor(hexString: colourHex)
+            
+            searchBar.barTintColor = UIColor(hexString: colourHex)
         }
         
     }
