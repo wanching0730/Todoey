@@ -56,6 +56,7 @@ class ToDoListViewController: SwipeTableViewController {
             
             if let colour = FlatPowderBlue().darken(byPercentage: CGFloat(indexPath.row) / CGFloat(toDoItem!.count)) {
                 cell.backgroundColor = colour
+                cell.textLabel?.textColor = ContrastColorOf(colour, returnFlat: true)
             }
             
             // Ternary operator
