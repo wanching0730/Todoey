@@ -38,8 +38,22 @@ class ToDoListViewController: SwipeTableViewController {
         super.viewDidLoad()
         
         tableView.separatorStyle = .none
-
+        
         //print(dataFilePath)
+    }
+    
+    // this method called right before the app is showed up, right after navigation bar added to the app
+    override func viewWillAppear(_ animated: Bool) {
+        if let colourHex = selectedCategory?.colour {
+            
+            // already ensure selectedCategory is not nil through optional binding, so can force unwrap it
+            title = selectedCategory!.name
+            
+            guard let navBar = navigationController?.navigationBar else {fatalError("Navigation bar does not exist")}
+            
+            navBar.barTintColor = UIColor(hexString: colourHex)
+        }
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -54,6 +68,7 @@ class ToDoListViewController: SwipeTableViewController {
         if let item = toDoItem?[indexPath.row] {
             cell.textLabel?.text = item.title
             
+            // use optional chaining to ensure the value is not nil
             if let colour = UIColor(hexString: selectedCategory!.colour)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(toDoItem!.count)) {
                 cell.backgroundColor = colour
                 cell.textLabel?.textColor = ContrastColorOf(colour, returnFlat: true)
