@@ -46,9 +46,9 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
         return options
     }
     
+    // let subclass to override this method
     func updateModel(at indexPath: IndexPath) {
         // Update data model
     }
 
-    
 }
