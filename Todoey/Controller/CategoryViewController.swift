@@ -115,8 +115,6 @@ class CategoryViewController: SwipeTableViewController {
         tableView.reloadData()
     }
     
-    
-    
 //    // save data using CoreData
 //    func saveCategories() {
 //
@@ -140,5 +138,20 @@ class CategoryViewController: SwipeTableViewController {
         }
         
         self.tableView.reloadData()
+    }
+    
+    // Delete data from swiping
+    override func updateModel(at indexPath: IndexPath) {
+        if let categoryForDeletion = self.categories?[indexPath.row] {
+            do {
+                try self.realm.write {
+                    self.realm.delete(categoryForDeletion)
+                }
+            } catch {
+                print("Error in deleting selected category \(error)")
+            }
+
+            //tableView.reloadData()
+        }
     }
 }
