@@ -6,11 +6,9 @@
 //  Copyright © 2018 Wan Ching. All rights reserved.
 //
 
-// Core data: framework to manage model layer object in iOS apps in CRUD our data.
 import UIKit
 import RealmSwift
 import ChameleonFramework
-//import CoreData
 
 class ToDoListViewController: SwipeTableViewController {
 
@@ -18,8 +16,7 @@ class ToDoListViewController: SwipeTableViewController {
     var toDoItem: Results<Item>?
     
     @IBOutlet weak var searchBar: UISearchBar!
-    //var itemArray = [Item]()
-
+    
     // call loadData() when selectedCategory has a value
     var selectedCategory: Category? {
         didSet{
@@ -27,23 +24,13 @@ class ToDoListViewController: SwipeTableViewController {
         }
     }
 
-//    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
-    
-//    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-
-    // inside UserDefaults class, there is a singleton static object named "standard", everytime pointing to the same static object, so we always editing the same plist
-    // defaults can only store data with certain datatype
-    // let defaults = UserDefaults.standard
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.separatorStyle = .none
-        
-        //print(dataFilePath)
     }
     
-    // this method called right before the app is showed up, right after navigation bar added to the app
+    // this method is called right before the app is showed up, right after navigation bar added to the app
     override func viewWillAppear(_ animated: Bool) {
         
         // already ensure selectedCategory is not nil through optional binding, so can force unwrap it
@@ -82,7 +69,6 @@ class ToDoListViewController: SwipeTableViewController {
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -99,17 +85,12 @@ class ToDoListViewController: SwipeTableViewController {
             }
             
             // Ternary operator
+            // if item.done == true, .checkmark is used, else .none is used
             cell.accessoryType = item.done ? .checkmark :  .none
         } else {
             cell.textLabel?.text = "No items added"
         }
-
-//        if item.done == true {
-//            cell.accessoryType = .checkmark
-//        } else {
-//            cell.accessoryType = .none
-//        }
-
+        
         return cell
     }
 
@@ -122,7 +103,6 @@ class ToDoListViewController: SwipeTableViewController {
         if let item = toDoItem?[indexPath.row] {
             do {
                 try realm.write {
-                    //realm.delete(item)
                     item.done = !item.done
                 }
             } catch {
@@ -132,13 +112,6 @@ class ToDoListViewController: SwipeTableViewController {
         
         // Call cellForRowAt method
         tableView.reloadData()
-
-        //itemArray[indexPath.row].done = !itemArray[indexPath.row].done
-
-//        context.delete(itemArray[indexPath.row])
-//        itemArray.remove(at: indexPath.row)
-
-        //saveItems()
 
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -168,15 +141,6 @@ class ToDoListViewController: SwipeTableViewController {
             
             self.tableView.reloadData()
 
-            // Add data using CoreData
-//            let newItem = Item(context: self.context)
-//            newItem.title = textField.text!
-//            newItem.done = false
-//            newItem.parentCategory = self.selectedCategory
-//            self.itemArray.append(newItem)
-//
-//            self.saveItems()
-
         }
 
         alert.addTextField { (alertTextField) in
@@ -188,67 +152,10 @@ class ToDoListViewController: SwipeTableViewController {
 
         present(alert, animated: true, completion: nil)
     }
-
-//    func saveItems() {
-////        let encoder = PropertyListEncoder()
-//
-//        do {
-//            // Save data to PList
-////            let data = try encoder.encode(itemArray)
-////            try data.write(to: dataFilePath!)
-//
-//            // Save data to CoreData
-//            // View backend Sqlite db in /Users/wanching/Library/Developer/CoreSimulator/Devices/FF0EC51A-BF6F-40E5-AC5F-9C00B4BA5F42/data/Containers/Data/Application/0EA25AEF-4083-4F4D-B876-A0DE25CB469C/Library/Application Support/DataModel.sqlite
-//            // Use Datum-SQLite Apps
-//            try context.save()
-//        } catch {
-//            print("Error in saving context \(error)")
-//        }
-//
-//        self.tableView.reloadData()
-//
-//        // self.defaults.set(self.itemArray, forKey: "ToDoListArray")
-//    }
-
-
-    // Load data from CoreData
-//    func loadData(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
-//
-//        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
-//
-//        if let additionalPredicate = predicate {
-//            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicate])
-//        } else {
-//            request.predicate = categoryPredicate
-//        }
-//
-//        do {
-//            itemArray = try context.fetch(request)
-//        } catch {
-//            print("Error in fetching data from context \(error)")
-//        }
-//
-//        tableView.reloadData()
-
-
-//        // load data from custom data file path
-//        if let data = try? Data(contentsOf: dataFilePath!) {
-//            let decoder = PropertyListDecoder()
-//            do {
-//                itemArray = try decoder.decode([Item].self, from: data)
-//            } catch {
-//                print("Error in decoding item array, \(error)")
-//            }
-//        }
-//
-//        // load data from user default
-//        if let items = defaults.array(forKey: "ToDoListArray") as? [Item] {
-//            itemArray = items
-//        }
-//    }
     
     // Load data from Realm
     func loadData() {
+        
         toDoItem = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
         
         tableView.reloadData()
@@ -264,7 +171,6 @@ class ToDoListViewController: SwipeTableViewController {
                 print("Error deleting item, \(error)")
             }
             
-            
         }
     }
 
@@ -279,14 +185,6 @@ extension ToDoListViewController: UISearchBarDelegate {
         toDoItem = toDoItem?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
         
         tableView.reloadData()
-
-//        let request: NSFetchRequest<Item> = Item.fetchRequest()
-//
-//        let searchPredicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-//
-//        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-//
-//        loadData(with: request, predicate: searchPredicate)
 
     }
 
