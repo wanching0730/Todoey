@@ -52,26 +52,32 @@ class ToDoListViewController: SwipeTableViewController {
         // guarantee that this optional binding won't fail, so use guard let
         guard let colourHex = selectedCategory?.colour else {fatalError()}
         
+        updateNavBar(withHexcode: colourHex)
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        updateNavBar(withHexcode: "1D9BF6")
+    }
+    
+    // MARK: - Navbar setup methods
+    
+    func updateNavBar(withHexcode colorHexcode: String) {
+        
         guard let navBar = navigationController?.navigationBar else {fatalError("Navigation bar does not exist")}
         
         // parameter of ContrastColorOf() only accept normal variable, and not Optional variable
-        guard let navbarColor = UIColor(hexString: colourHex) else {fatalError()}
+        guard let navbarColor = UIColor(hexString: colorHexcode) else {fatalError()}
         
         // navbar background colour
         navBar.barTintColor = navbarColor
         // navbar text colour
         navBar.tintColor = ContrastColorOf(navbarColor, returnFlat: true)
         navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: ContrastColorOf(navbarColor, returnFlat: true)]
-
+        
         searchBar.barTintColor = navbarColor
         
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        guard let originalColor = UIColor(hexString: "1D9BF6") else {fatalError()}
-        navigationController?.navigationBar.barTintColor = originalColor
-        navigationController?.navigationBar.tintColor = FlatWhite()
-        navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: FlatWhite()]
     }
 
     override func didReceiveMemoryWarning() {
