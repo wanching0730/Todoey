@@ -162,6 +162,7 @@ extension CategoryViewController: SwipeTableViewCellDelegate {
                     print("Error in deleting selected category \(error)")
                 }
                 
+                //tableView.reloadData()
             }
         }
         
