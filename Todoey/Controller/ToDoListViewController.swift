@@ -9,6 +9,7 @@
 // Core data: framework to manage model layer object in iOS apps in CRUD our data.
 import UIKit
 import RealmSwift
+import ChameleonFramework
 //import CoreData
 
 class ToDoListViewController: SwipeTableViewController {
@@ -35,6 +36,8 @@ class ToDoListViewController: SwipeTableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.separatorStyle = .none
 
         //print(dataFilePath)
     }
@@ -50,6 +53,10 @@ class ToDoListViewController: SwipeTableViewController {
 
         if let item = toDoItem?[indexPath.row] {
             cell.textLabel?.text = item.title
+            
+            if let colour = FlatPowderBlue().darken(byPercentage: CGFloat(indexPath.row) / CGFloat(toDoItem!.count)) {
+                cell.backgroundColor = colour
+            }
             
             // Ternary operator
             cell.accessoryType = item.done ? .checkmark :  .none
